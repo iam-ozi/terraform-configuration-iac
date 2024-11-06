@@ -35,6 +35,20 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: terraform plan -out=tfplan
 
+      - name: Upload Plam
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfplan
+          path: ./vpc/tfplan
+
+      - name: Download Plan
+        if: github.event_name == 'push'
+        uses: actions/download-artifact@v3
+        with:
+          name: tfplan
+          path: ./vpc
+
       - name: Terraform Apply (requires PR approval)
         if: github.event_name == 'push'
         working-directory: ./vpc
