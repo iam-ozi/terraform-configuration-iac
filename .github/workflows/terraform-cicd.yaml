@@ -35,6 +35,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: terraform plan -out=tfplan
 
+      - name: Verify tfplan file
+        if: github.event_name == 'pull_request'
+        working-directory: ./vpc
+        run: ls -l tfplan  
+
       - name: Upload Plam
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
