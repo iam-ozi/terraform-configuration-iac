@@ -3,10 +3,9 @@ name: Terraform CI/CD
 on:
   push:
     branches:
-      - dev
+      - "*"  # Runs on any branch push
   pull_request:
-    branches: 
-      - main
+    types: [closed]  # Triggers when a PR is closed (merged)
 
 jobs:
   terraform:
@@ -31,14 +30,14 @@ jobs:
 
       - name: Terraform Init
         working-directory: ./vpc
-        run: terraform init 
+        run: terraform init
 
       - name: Terraform Plan
-        if: github.ref != 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
         working-directory: ./vpc
         run: terraform plan -out=plan.tfplan
 
       - name: Terraform Apply
-        if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
         working-directory: ./vpc
         run: terraform apply -auto-approve
