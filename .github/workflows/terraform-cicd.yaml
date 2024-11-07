@@ -12,7 +12,7 @@ on:
 jobs:
   terraform:
     name: Terraform Plan or Apply
-    runs-on ubuntu-latest
+    runs-on: ubuntu-latest
 
     steps:
       - namee: Checkout repository
