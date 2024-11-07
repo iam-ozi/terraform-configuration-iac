@@ -42,3 +42,8 @@ jobs:
         if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
         working-directory: ./vpc
         run: terraform apply -auto-approve
+
+      - name: Terraform Destroy
+        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+        working-directory: ./vpc
+        run: terraform destroy -auto-approve
