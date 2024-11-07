@@ -36,7 +36,7 @@ jobs:
 
       - name: Terraform Plan
         if: github.ref != 'refs/heads/main'
-        working directory: ./vpc
+        working-directory: ./vpc
         run: terraform plan -out=plan.tfplan
 
       - name: Terraform Apply 
