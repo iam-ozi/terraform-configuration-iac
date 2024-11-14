@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - dev  # Runs on any branch push
+    paths:
+      - '**/terraform.tfvars'
   pull_request:
     branches:
       - main
@@ -13,6 +15,9 @@ jobs:
   terraform:
     name: Terraform Plan or Apply
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        directory: ['./vpc', './route53', './security_groups']  # Directories to target for Terraform provisioning
 
     steps:
       - name: Checkout repository
@@ -31,15 +36,15 @@ jobs:
           aws-region: us-east-1
 
       - name: Terraform Init
-        working-directory: ./vpc
+        working-directory: ${{ matrix.directory }}
         run: terraform init
 
       - name: Terraform Plan
         if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
-        working-directory: ./vpc
+        working-directory: ${{ matrix.directory }}
         run: terraform plan -out=plan.tfplan
 
       - name: Terraform Apply
         if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
-        working-directory: ./vpc
+        working-directory: ${{ matrix.directory }}
         run: terraform apply -auto-approve
