@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        directory: ['./vpc', './route53', './security_groups']  # Directories to target for Terraform provisioning
+        directory: ['./vpc']  # Directories to target for Terraform provisioning
 
     steps:
       - name: Checkout repository
