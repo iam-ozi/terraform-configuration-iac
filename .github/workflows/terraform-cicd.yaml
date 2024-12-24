@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev  # Runs on any branch push
+      - vpc-name-roolback
     paths:
       - '**/terraform.tfvars'
   pull_request:
